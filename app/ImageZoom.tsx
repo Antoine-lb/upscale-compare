@@ -25,7 +25,6 @@ const ImageZoom = ({
   }, [wheelEvent, elementIdentifier]);
 
   const handleWheel = (event) => {
-    console.log("event", event);
     if (!event) return;
     const speed = 0.5;
     let target = { x: 0, y: 0 };
@@ -53,9 +52,9 @@ const ImageZoom = ({
     tmp_scale += -1 * Math.max(-1, Math.min(1, event.deltaY)) * speed * scale;
 
     // Uncomment to constrain scale
-    // const maxScale = 4;
-    // const minScale = 1;
-    // setScale((prevScale) => Math.max(minScale, Math.min(maxScale, prevScale)));
+    const maxScale = 4;
+    const minScale = 1;
+    setScale((prevScale) => Math.max(minScale, Math.min(maxScale, prevScale)));
 
     setPos({
       x: -target.x * tmp_scale + pointer.x,
@@ -71,7 +70,7 @@ const ImageZoom = ({
     //   setPos({ ...pos, y: -size.h * (tmp_scale - 1) });
 
     const res = `translate(${pos.x}px,${pos.y}px) scale(${tmp_scale},${tmp_scale})`;
-    console.log(elementIdentifier, "res", res);
+    console.log("res", res);
 
     imageRef.current.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${tmp_scale},${tmp_scale})`;
   };

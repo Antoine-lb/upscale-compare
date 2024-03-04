@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="image">
+        <img src="https://picsum.photos/400/700" />
+      </div>
+    </div>
+  </body>
+  <style>
+    .container {
+      width: 400px;
+      height: 700px;
+      overflow: hidden;
+      outline: 1px solid gray;
+    }
+
+    .image {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.3s;
+      transform-origin: 0 0;
+    }
+
+    img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+    }
+  </style>
+  <script>
+    const container = document.querySelector(".container");
+    const image = document.querySelector(".image");
+    const speed = 0.5;
+    let size = {
+      w: image.offsetWidth,
+      h: image.offsetHeight,
+    };
+    let pos = { x: 0, y: 0 };
+    let target = { x: 0, y: 0 };
+    let pointer = { x: 0, y: 0 };
+    let scale = 1;
+
+    image.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+
+        pointer.x = event.pageX - container.offsetLeft;
+        pointer.y = event.pageY - container.offsetTop;
+        target.x = (pointer.x - pos.x) / scale;
+        target.y = (pointer.y - pos.y) / scale;
+
+        scale += -1 * Math.max(-1, Math.min(1, event.deltaY)) * speed * scale;
+
+        // Uncomment to constrain scale
+        const max_scale = 10;
+        const min_scale = 1;
+        scale = Math.max(min_scale, Math.min(max_scale, scale));
+
+        pos.x = -target.x * scale + pointer.x;
+        pos.y = -target.y * scale + pointer.y;
+
+        // Uncomment for keeping the image within area (works with min scale = 1)
+        // if (pos.x > 0) pos.x = 0;
+        // if (pos.x + size.w * scale < size.w) pos.x = -size.w * (scale - 1);
+        // if (pos.y > 0) pos.y = 0;
+        // if (pos.y + size.h * scale < size.h) pos.y = -size.h * (scale - 1);
+
+        const res = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
+        console.log("res", res);
+
+        image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
+      },
+      { passive: false }
+    );
+  </script>
+</html>
