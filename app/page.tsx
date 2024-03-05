@@ -141,8 +141,9 @@ export default function Home() {
                   <ImageWithDropZone
                     onDropCallback={(f: File[]) => addFilesSync(f, "left")}
                     src={
-                      files[indexFileLeft]?.preview ||
-                      "https://er--test-public.s3.fr-par.scw.cloud/upscaled_1.webp"
+                      indexFileLeft
+                        ? files[indexFileLeft]?.preview
+                        : "https://er--test-public.s3.fr-par.scw.cloud/upscaled_1.webp"
                     }
                   />
                 }
@@ -150,8 +151,9 @@ export default function Home() {
                   <ImageWithDropZone
                     onDropCallback={(f: File[]) => addFilesSync(f, "right")}
                     src={
-                      files[indexFileRight]?.preview ||
-                      "https://er--test-public.s3.fr-par.scw.cloud/upscaled_2.webp"
+                      indexFileRight
+                        ? files[indexFileRight]?.preview
+                        : "https://er--test-public.s3.fr-par.scw.cloud/upscaled_2.webp"
                     }
                   />
                 }
