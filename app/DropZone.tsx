@@ -4,38 +4,30 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
-const DropZone = ({ onDropCallback }) => {
-  const [files, setFiles] = useState([]);
-
+const DropZone = ({
+  onDropCallback,
+  text,
+}: {
+  onDropCallback: (acceptedFiles: File[]) => void;
+  text: string;
+}) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/*": [],
     },
     onDrop: (acceptedFiles) => {
       onDropCallback(acceptedFiles);
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        )
-      );
     },
   });
 
-  useEffect(() => {
-    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, []);
-
   return (
-    <section className=" bg-slate-600">
+    <section className=" w-full pt-5">
       <div
         {...getRootProps({ className: "dropzone" })}
-        className="bg-purple-800 rounded p-5"
+        className="bg-white/10 rounded-2xl flex justify-center items-center h-20 mx-6 cursor-pointer border-2 border-dashed border-white/20 hover:border-white/40 transition-all duration-300 ease-in-out"
       >
         <input {...getInputProps()} />
-        <p>Drag drop some files here, or click to select files</p>
+        <p>{text}</p>
       </div>
     </section>
   );

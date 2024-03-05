@@ -18,6 +18,8 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  font-family: "Space Grotesk", sans-serif;
+
   /* background: linear-gradient(
       to bottom,
       transparent,
@@ -50,4 +52,21 @@ img {
   width: auto;
   height: auto;
   max-width: 100%;
+}
+
+main {
+  /* background: #4a2e7e;
+  background: -webkit-linear-gradient(to right, #2a0845, #4a2e7e);
+  background: linear-gradient(to right, #2a0845, #4a2e7e); */
+  background: #301d44; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #170320,
+    #301d44
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #170320,
+    #301d44
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
