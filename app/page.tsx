@@ -99,10 +99,12 @@ export default function Home() {
 
     setFiles([...files, ...filesWithPreviewArray]);
     if (side === "left") {
+      console.log("left files.length", files.length);
       setIndexFileLeft(files.length);
     }
 
     if (side === "right") {
+      console.log("right files.length", files.length);
       setIndexFileRight(files.length);
     }
   }
@@ -118,7 +120,7 @@ export default function Home() {
       <img
         src="/drophere.svg"
         alt="drop here sign"
-        className={`m-auto opacity-70 ${files.length > 0 ? "opacity-0" : ""}`}
+        className={`m-auto opacity-0 ${files.length == 0 ? "opacity-70" : ""}`}
       />
       <div className="flex  flex-col items-center justify-between p-24 pt-1 ">
         <div className="flex justify-center items-center cursor-col-resize  border border-[#822f8f] shadow-lg shadow-[#822f8f]/20">
@@ -141,7 +143,7 @@ export default function Home() {
                   <ImageWithDropZone
                     onDropCallback={(f: File[]) => addFilesSync(f, "left")}
                     src={
-                      indexFileLeft
+                      indexFileLeft !== null
                         ? files[indexFileLeft]?.preview
                         : "https://er--test-public.s3.fr-par.scw.cloud/upscaled_1.webp"
                     }
@@ -151,7 +153,7 @@ export default function Home() {
                   <ImageWithDropZone
                     onDropCallback={(f: File[]) => addFilesSync(f, "right")}
                     src={
-                      indexFileRight
+                      indexFileRight !== null
                         ? files[indexFileRight]?.preview
                         : "https://er--test-public.s3.fr-par.scw.cloud/upscaled_2.webp"
                     }
