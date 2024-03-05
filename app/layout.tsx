@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CSPostHogProvider } from "./providers";
 
 import { Space_Grotesk } from "next/font/google";
 
@@ -20,12 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* add this */}
       <head>
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:image" content="/og-img.webp" />
       </head>
-      <body className={roboto.className}>{children}</body>
+
+      <CSPostHogProvider>
+        <body className={roboto.className}>{children}</body>
+      </CSPostHogProvider>
     </html>
   );
 }

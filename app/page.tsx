@@ -1,41 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import DropZone from "./DropZone";
+import ImageWithDropZone from "./ImageWithDropZone";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import {
   ReactCompareSlider,
   ReactCompareSliderHandle,
 } from "react-compare-slider";
 import prettyBytes from "pretty-bytes";
-import Head from "next/head";
-
-// async function getImageDimensions(file) {
-//   let img = new Image();
-//   img.src = URL.createObjectURL(file);
-//   await file.preview.decode();
-//   let width = img.width;
-//   let height = img.height;
-//   console.log("{", {
-//     width,
-//     height,
-//   });
-//   return width;
-//   return {
-//     width,
-//     height,
-//   };
-// }
+import { aspect_ratio, getImageDimensions } from "./utils";
 
 export default function Home() {
-  const [files, setFiles] = useState<{ file: File; preview: string }[]>([]);
+  const [files, setFiles] = useState<
+    { file: File; preview: string; width: number; height: number }[]
+  >([]);
   const [indexFileLeft, setIndexFileLeft] = useState<number | null>(null);
   const [indexFileRight, setIndexFileRight] = useState<number | null>(null);
   let portrait = false;
 
   const thumbsLeft = files.map((file, i) => (
     <button
-      className={`flex items-center w-full h-24  mb-2 rounded-2xl  hover:bg-white/20 transition-all duration-300 ease-in-out ${
+      className={`flex items-center w-full min-h-24  mb-2 rounded-2xl  hover:bg-white/20 transition-all duration-300 ease-in-out ${
         indexFileLeft === i ? "bg-white/40" : "bg-white/10"
       }`}
       key={file.file.name}
@@ -49,8 +35,14 @@ export default function Home() {
         />
         <div className="text-left">
           <p> {file.file.name} </p>
-          <p className="italic font-light"> {prettyBytes(file.file.size)} </p>
-          {/* <p> {getImageDimensions(file)} </p> */}
+          <p className=" font-bold "> {prettyBytes(file.file.size)} </p>
+          <p className="font-bold">
+            {file.width}x{file.height}{" "}
+            <span className="italic font-mono font-normal">
+              ({aspect_ratio(file.width / file.height)[0]}:
+              {aspect_ratio(file.width / file.height)[1]})
+            </span>
+          </p>
         </div>
       </div>
     </button>
@@ -58,7 +50,7 @@ export default function Home() {
 
   const thumbsRight = files.map((file, i) => (
     <button
-      className={`flex items-center w-full h-24  mb-2 rounded-2xl  hover:bg-white/20 transition-all duration-300 ease-in-out ${
+      className={`flex items-center w-full min-h-24  mb-2 rounded-2xl  hover:bg-white/20 transition-all duration-300 ease-in-out ${
         indexFileRight === i ? "bg-white/40" : "bg-white/10"
       }`}
       key={file.file.name}
@@ -72,22 +64,44 @@ export default function Home() {
         />
         <div className="text-left">
           <p> {file.file.name} </p>
-          <p className="italic font-light"> {prettyBytes(file.file.size)} </p>
-          {/* <p> {getImageDimensions(file)} </p> */}
+          <p className=" font-bold "> {prettyBytes(file.file.size)} </p>
+          <p className="font-bold">
+            {file.width}x{file.height}{" "}
+            <span className="italic font-mono font-normal">
+              ({aspect_ratio(file.width / file.height)[0]}:
+              {aspect_ratio(file.width / file.height)[1]})
+            </span>
+          </p>
         </div>
       </div>
     </button>
   ));
 
-  function addFiles(acceptedFiles: File[], side: "left" | "right" | null) {
-    const filesWithPreview = acceptedFiles.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
-    setFiles([...files, ...filesWithPreview]);
+  async function addFilesSync(
+    acceptedFiles: File[],
+    side: "left" | "right" | null
+  ) {
+    let i = 0;
+    let filesWithPreviewArray = [];
+    while (i < acceptedFiles.length) {
+      const file = acceptedFiles[i];
+      const wh = await getImageDimensions(file);
+
+      filesWithPreviewArray.push({
+        file,
+        preview: URL.createObjectURL(file),
+        width: wh.width,
+        height: wh.height,
+      });
+
+      i++;
+    }
+
+    setFiles([...files, ...filesWithPreviewArray]);
     if (side === "left") {
       setIndexFileLeft(files.length);
     }
+
     if (side === "right") {
       setIndexFileRight(files.length);
     }
@@ -95,29 +109,28 @@ export default function Home() {
 
   return (
     <main className=" min-h-screen">
-      <Head>
-        <title>My page title</title>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </Head>
-      <div className="flex p-4 items-center">
+      <div className="flex p-4 items-center  bg-gradient-to-b from-[#170320] from-10% to-emerald-500/0 to-50%">
         <img className=" w-16 rounded-xl" src="/us-logo.webp" alt="asdf" />
         <h1 className="pl-3 text-3xl font-bold text-white/70">
           Upscale compare
         </h1>
       </div>
-      <div className="flex  flex-col items-center justify-between p-24 pt-5 ">
+      <img
+        src="/drophere.svg"
+        alt="drop here sign"
+        className={`m-auto opacity-70 ${files.length > 0 ? "opacity-0" : ""}`}
+      />
+      <div className="flex  flex-col items-center justify-between p-24 pt-1 ">
         <div className="flex justify-center items-center cursor-col-resize  border border-[#822f8f] shadow-lg shadow-[#822f8f]/20">
           <TransformWrapper>
             <TransformComponent>
               <ReactCompareSlider
-                // itemOne={<img src="https://picsum.photos/400/400" alt="asdf" />}
                 handle={
                   <ReactCompareSliderHandle
                     portrait={portrait}
                     buttonStyle={{
                       display: "none",
                     }}
-                    // Make lines thicker so they're easier to grab.
                     linesStyle={{
                       width: portrait ? "100%" : 0.5,
                       height: portrait ? 0.5 : "100%",
@@ -125,24 +138,21 @@ export default function Home() {
                   />
                 }
                 itemOne={
-                  <img
+                  <ImageWithDropZone
+                    onDropCallback={(f: File[]) => addFilesSync(f, "left")}
                     src={
-                      files[indexFileLeft || 0]?.preview ||
+                      files[indexFileLeft]?.preview ||
                       "https://er--test-public.s3.fr-par.scw.cloud/upscaled_1.webp"
                     }
-                    alt="test"
-                    className="w-full"
                   />
                 }
                 itemTwo={
-                  <img
+                  <ImageWithDropZone
+                    onDropCallback={(f: File[]) => addFilesSync(f, "right")}
                     src={
-                      files[indexFileRight !== null ? indexFileRight : 1]
-                        ?.preview ||
+                      files[indexFileRight]?.preview ||
                       "https://er--test-public.s3.fr-par.scw.cloud/upscaled_2.webp"
                     }
-                    className="w-full"
-                    alt="test"
                   />
                 }
               />
@@ -153,11 +163,11 @@ export default function Home() {
         <div className="flex  w-full max-w-[64rem]">
           <DropZone
             text="Left: Drop or select"
-            onDropCallback={(f: File[]) => addFiles(f, "left")}
+            onDropCallback={(f: File[]) => addFilesSync(f, "left")}
           />
           <DropZone
             text="Right: Drop or select"
-            onDropCallback={(f: File[]) => addFiles(f, "right")}
+            onDropCallback={(f: File[]) => addFilesSync(f, "right")}
           />
         </div>
 
@@ -166,6 +176,16 @@ export default function Home() {
           <aside className="flex flex-col w-full p-3">{thumbsRight}</aside>
         </div>
       </div>
+      <footer className="bg-[#100715] text-center py-10 mt-32">
+        source code:{" "}
+        <a
+          className="underline"
+          target="_blank"
+          href="https://github.com/Antoine-lb/upscale-compare"
+        >
+          Github
+        </a>
+      </footer>
     </main>
   );
 }
