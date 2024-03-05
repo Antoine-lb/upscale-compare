@@ -23,6 +23,7 @@ export default function RootLayout({
       {/* add this */}
       <head>
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:image" content="/og-img.webp" />
       </head>
       <body className={roboto.className}>{children}</body>
     </html>
