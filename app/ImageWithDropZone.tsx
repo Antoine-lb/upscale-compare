@@ -26,7 +26,7 @@ const ImageWithDropZone = ({
       <img
         src={src}
         alt="user uploaded image"
-        className={`w-full ${isDragActive ? "opacity-50	" : ""}`}
+        className={`w-full max-h-[70rem] ${isDragActive ? "opacity-50	" : ""}`}
       />
     </div>
   );

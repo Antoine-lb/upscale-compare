@@ -123,7 +123,7 @@ export default function Home() {
         className={`m-auto opacity-0 ${files.length == 0 ? "opacity-70" : ""}`}
       />
       <div className="flex  flex-col items-center justify-between p-24 pt-1 ">
-        <div className="flex justify-center items-center cursor-col-resize  border border-[#822f8f] shadow-lg shadow-[#822f8f]/20">
+        <div className="flex max-w-[70rem]  justify-center items-center cursor-col-resize  border border-[#822f8f] shadow-lg shadow-[#822f8f]/20">
           <TransformWrapper>
             <TransformComponent>
               <ReactCompareSlider
