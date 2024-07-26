@@ -180,7 +180,7 @@ export default function Home() {
           <aside className="flex flex-col w-full p-3">{thumbsRight}</aside>
         </div>
       </div>
-      <footer className="bg-[#100715] text-center py-10 mt-32">
+      <footer className="bg-[#100715] text-gray-600 text-center py-10 mt-32">
         source code:{" "}
         <a
           className="underline"
